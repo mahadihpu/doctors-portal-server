@@ -20,19 +20,30 @@ client.connect((err) => {
     .db("doctors-portal")
     .collection("appointment");
 
+  app.get("/allAppointments", (req, res) => {
+    appointmentCollection.find({}).toArray((err, documents) => {
+      res.send(documents);
+    });
+  });
+
+  app.post("/addAdoctor", (req, res) => {
+    const name = req.body.name;
+    const email = req.body.email;
+    console.log(name, email);
+  });
+
   app.post("/appointmentsByDate", (req, res) => {
     const time = req.body;
     console.log(time.date);
-    appointmentCollection.find({date: time.date})
+    appointmentCollection
+      .find({ date: time.date })
       .toArray((err, documents) => {
         res.send(documents);
-        console.log(documents)
       });
   });
 
   app.post("/addAppointment", (req, res) => {
     const appointment = req.body;
-    console.log(appointment);
     appointmentCollection.insertOne(appointment).then((result) => {
       res.send(result.insertedCount > 0);
     });
